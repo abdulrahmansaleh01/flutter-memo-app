@@ -5,8 +5,16 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int indexTab = 0;
+  TabController _tabController;
+
+  void initState() {
+    // TODO: implement initState
+    _tabController = new TabController(length: 2, vsync: this, initialIndex: 0)
+      ..addListener(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,33 +73,34 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 15.0),
-            child: DefaultTabController(
-              length: 2,
-              initialIndex: 0,
-              child: TabBar(
-                labelColor: Colors.black,
-                unselectedLabelColor: Color(0xFFAFB4C6),
-                indicatorColor: Color(0xFF417BFB),
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: 4.0,
-                onTap: (index) {
-                  setState(() {
-                    indexTab = index;
-                  });
-                },
-                tabs: [
-                  Tab(
-                    child: Text("Your Memo",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                  Tab(
-                    child:
-                        Text("Category", style: TextStyle(color: Colors.black)),
-                  ),
-                ],
-              ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.grey[200],
+            ),
+            child: TabBar(
+              isScrollable: true,
+              indicatorPadding: EdgeInsets.all(10),
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.blue[400],
+              labelStyle: TextStyle(fontSize: 20),
+              labelPadding:
+                  EdgeInsets.only(left: 35, right: 35, top: 12, bottom: 12),
+              indicator: BoxDecoration(
+                  color: Colors.blue[400],
+                  borderRadius: BorderRadius.circular(20)),
+              controller: _tabController,
+              indicatorColor: Color(0xFF417BFB),
+              onTap: (index) {
+                setState(() {
+                  indexTab = index;
+                });
+              },
+              tabs: [
+                Text("Your Memo"),
+                Text("Category"),
+                // Text("Tes"),
+              ],
             ),
           ),
         ],
