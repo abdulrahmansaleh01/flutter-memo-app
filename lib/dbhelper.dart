@@ -28,7 +28,7 @@ class DbHelper {
       CREATE TABLE categoryMemo(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
-        description TEXT,
+        description TEXT
       )
     ''');
 
@@ -48,7 +48,7 @@ class DbHelper {
   //SELECT
   Future<List<Map<String, dynamic>>> selectCategory() async {
     Database db = await this.initDb();
-    var mapListCategory = await db.query('category', orderBy: 'name');
+    var mapListCategory = await db.query('categoryMemo', orderBy: 'name');
 
     return mapListCategory;
   }
@@ -56,7 +56,7 @@ class DbHelper {
   //CREATE
   Future<int> insertCategory(Category object) async {
     Database db = await this.initDb();
-    int countCategory = await db.insert('category', object.toMap());
+    int countCategory = await db.insert('categoryMemo', object.toMap());
 
     return countCategory;
   }
@@ -65,7 +65,7 @@ class DbHelper {
   Future<int> updateCategory(Category object) async {
     Database db = await this.initDb();
     int countCategory = await db.update(
-      'category',
+      'categoryMemo',
       object.toMap(),
       where: 'id=?',
       whereArgs: [object.id],
@@ -78,7 +78,7 @@ class DbHelper {
   Future<int> deleteCategory(int id) async {
     Database db = await this.initDb();
     int countCategory = await db.delete(
-      'category',
+      'categoryMemo',
       where: 'id=?',
       whereArgs: [id],
     );
