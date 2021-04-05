@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
+import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
+import 'package:uts_aplikasi_catatan_memo/pages/entryform_category.dart';
+import 'package:uts_aplikasi_catatan_memo/widgets/colors.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,10 +14,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   int indexTab = 0;
   TabController _tabController;
 
+  DbHelper dbHelper = DbHelper();
+  List<Category> categoryList;
+  int countCategory = 0;
+
   void initState() {
     // TODO: implement initState
     _tabController = new TabController(length: 2, vsync: this, initialIndex: 0)
       ..addListener(() {});
+    updateListViewCategory();
     super.initState();
   }
 
@@ -99,10 +109,214 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               tabs: [
                 Text("Your Memo"),
                 Text("Category"),
-                // Text("Tes"),
               ],
             ),
           ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // TAB VIEW MEMO
+                Center(
+                  child: Text("List Memo"),
+                ),
+
+                // TAB VIEW CATEGORY MEMO
+                ListView.builder(
+                  itemCount: countCategory,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Dismissible(
+                      key: new Key(categoryList[index].name),
+                      onDismissed: (direction) {
+                        // Menghapus data category dari tabel
+                        dbHelper.deleteCategory(this.categoryList[index].id);
+                        updateListViewCategory();
+
+                        // Menampilkan snackbar.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Category Item deleted")));
+                      },
+                      // Menampilkan background saat item telah di-swipe (hapus).
+                      background: Container(
+                        color: Colors.red,
+                        padding: EdgeInsets.only(right: 10, left: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Category"),
+                                content: Container(
+                                  height: 290.0,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Name:"),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            top: 5, bottom: 20.0),
+                                        child: TextField(
+                                          enabled: false,
+                                          keyboardType: TextInputType.text,
+                                          decoration: InputDecoration(
+                                            // labelText: 'Category Name',
+                                            hintText:
+                                                this.categoryList[index].name,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                            prefixIcon:
+                                                Icon(Icons.view_list_outlined),
+                                          ),
+                                        ),
+                                      ),
+                                      Text("Description:"),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: TextField(
+                                          enabled: false,
+                                          keyboardType: TextInputType.text,
+                                          maxLength: 200,
+                                          maxLines: 5,
+                                          decoration: InputDecoration(
+                                            // labelText: 'Description',
+                                            hintText: this
+                                                .categoryList[index]
+                                                .description,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  MaterialButton(
+                                    color: Colors.blue[400],
+                                    textColor: Colors.white,
+                                    elevation: 5.0,
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          height: 80,
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          // color: Colors.white,
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                offset: Offset(0, 9),
+                                blurRadius: 20,
+                                spreadRadius: 1)
+                          ]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    height: 25,
+                                    width: 25,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: categoryColors[
+                                              (index % categoryColors.length)
+                                                  .floor()],
+                                          width: 4),
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        this.categoryList[index].name,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        "Tap for show detail",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      var categoryItem =
+                                          await navigateToEntryFormCategory(
+                                              context,
+                                              this.categoryList[index]);
+
+                                      dbHelper.updateCategory(categoryItem);
+                                      updateListViewCategory();
+                                    },
+                                    child: Icon(Icons.edit_outlined),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20),
+                                    color: categoryColors[
+                                        (index % categoryColors.length)
+                                            .floor()],
+                                    height: double.infinity,
+                                    width: 4,
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          )
         ],
       ),
       floatingActionButton: _bottomButtons(),
@@ -114,16 +328,56 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ? FloatingActionButton(
             shape: StadiumBorder(),
             onPressed: null,
-            backgroundColor: Color(0xFF417BFB),
+            backgroundColor: Colors.blue[400],
             child: Icon(Icons.post_add_sharp),
           )
         : FloatingActionButton(
             shape: StadiumBorder(),
-            onPressed: null,
-            backgroundColor: Color(0xFF417BFB),
+            onPressed: () async {
+              var category = await navigateToEntryFormCategory(context, null);
+              if (category != null) {
+                //Memanggil Fungsi untuk Insert ke DB
+                int result = await dbHelper.insertCategory(category);
+                if (result > 0) {
+                  updateListViewCategory();
+                }
+              }
+            },
+            backgroundColor: Colors.blue[400],
             child: Icon(
               Icons.add,
             ),
           );
+  }
+
+  Future<Category> navigateToEntryFormCategory(
+      BuildContext context, Category category) async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return EntryCategory(category);
+        },
+      ),
+    );
+    return result;
+  }
+
+  void updateListViewCategory() {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then(
+      (database) {
+        //SELECT data category dari DB
+        Future<List<Category>> categoryListFuture = dbHelper.getCategoryList();
+        categoryListFuture.then((categoryList) {
+          setState(
+            () {
+              this.categoryList = categoryList;
+              this.countCategory = categoryList.length;
+            },
+          );
+        });
+      },
+    );
   }
 }
