@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
+import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
 import 'package:uts_aplikasi_catatan_memo/pages/entryform_category.dart';
+import 'package:uts_aplikasi_catatan_memo/pages/entryform_memo.dart';
 import 'package:uts_aplikasi_catatan_memo/widgets/colors.dart';
 
 class Home extends StatefulWidget {
@@ -17,6 +19,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   DbHelper dbHelper = DbHelper();
   List<Category> categoryList;
   int countCategory = 0;
+
+  List<Memo> memoList;
+  int countMemo = 0;
 
   void initState() {
     // TODO: implement initState
@@ -138,7 +143,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       },
                       // Menampilkan background saat item telah di-swipe (hapus).
                       background: Container(
-                        color: Colors.red,
+                        color: categoryColors[
+                            (index % categoryColors.length).floor()],
                         padding: EdgeInsets.only(right: 10, left: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -327,7 +333,16 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return indexTab == 0
         ? FloatingActionButton(
             shape: StadiumBorder(),
-            onPressed: null,
+            onPressed: () async {
+              var memo = await navigateToEntryFormMemo(context, null);
+              if (memo != null) {
+                //Memanggil Fungsi untuk Insert ke DB
+                int result = await dbHelper.insertMemo(memo);
+                if (result > 0) {
+                  updateListViewMemo();
+                }
+              }
+            },
             backgroundColor: Colors.blue[400],
             child: Icon(Icons.post_add_sharp),
           )
@@ -350,6 +365,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           );
   }
 
+//------------------ CATEGORY MEMO ---------------------
   Future<Category> navigateToEntryFormCategory(
       BuildContext context, Category category) async {
     var result = await Navigator.push(
@@ -374,6 +390,37 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             () {
               this.categoryList = categoryList;
               this.countCategory = categoryList.length;
+            },
+          );
+        });
+      },
+    );
+  }
+
+  //----------------------- MEMO --------------------------
+  Future<Memo> navigateToEntryFormMemo(BuildContext context, Memo memo) async {
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return EntryMemo(memo);
+        },
+      ),
+    );
+    return result;
+  }
+
+  void updateListViewMemo() {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then(
+      (database) {
+        //SELECT data memo dari DB
+        Future<List<Memo>> memoListFuture = dbHelper.getMemoList();
+        memoListFuture.then((memoList) {
+          setState(
+            () {
+              this.memoList = memoList;
+              this.countMemo = memoList.length;
             },
           );
         });
