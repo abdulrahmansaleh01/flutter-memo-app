@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
+import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
+import 'package:uts_aplikasi_catatan_memo/widgets/dropdown_category.dart';
 
 class EntryMemo extends StatefulWidget {
   final Memo memo;
@@ -14,11 +17,20 @@ class _EntryMemoState extends State<EntryMemo> {
   Memo memo;
 
   _EntryMemoState(this.memo);
+  DbHelper dbHelper = DbHelper();
+  Category selectedCategory;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+
+  void callback(Category _selectedCategory) {
+    setState(() {
+      selectedCategory = _selectedCategory;
+      print(selectedCategory.name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +42,10 @@ class _EntryMemoState extends State<EntryMemo> {
     }
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: memo == null
             ? Text(
                 'Create Memo',
@@ -92,20 +108,14 @@ class _EntryMemoState extends State<EntryMemo> {
             ),
 
             // kategori
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: TextField(
-                controller: categoryController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Enter Category',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  prefixIcon: Icon(Icons.text_fields),
-                ),
-                onChanged: (value) {},
-              ),
+
+            FutureBuilder<List<Category>>(
+              future: dbHelper.getCategoryList(),
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? DropdownCategory(snapshot.data, callback)
+                    : Text("no category");
+              },
             ),
 
             // DESKRIPSI
@@ -143,17 +153,14 @@ class _EntryMemoState extends State<EntryMemo> {
                       onPressed: () {
                         if (memo == null) {
                           //tambah data
-                          memo = Memo(
-                              titleController.text,
-                              dateController.text,
-                              descriptionController.text,
-                              int.parse(categoryController.text));
+                          memo = Memo(titleController.text, dateController.text,
+                              descriptionController.text, selectedCategory.id);
                         } else {
                           //ubah data
                           memo.title = titleController.text;
                           memo.date = dateController.text;
                           memo.description = descriptionController.text;
-                          memo.categoryId = int.parse(categoryController.text);
+                          memo.categoryId = selectedCategory.id;
                         }
 
                         //kembali ke layar sebelumnya dengan membawa objek memo
