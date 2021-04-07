@@ -28,6 +28,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     _tabController = new TabController(length: 2, vsync: this, initialIndex: 0)
       ..addListener(() {});
     updateListViewCategory();
+    updateListViewMemo();
     super.initState();
   }
 
@@ -59,13 +60,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             width: double.infinity,
             child: Row(
               children: [
-                Image(
-                    image:
-                        // NetworkImage('https://iconfair.com/cepsools/2020/11/Artboard-30-10.png'),
-                        NetworkImage(
-                            'https://cdn.pixabay.com/photo/2016/10/06/19/02/clipboard-1719736_960_720.png')
-                    //
-                    ),
+                // Image(
+                //     image:
+                //         // NetworkImage(
+                //         //     'https://iconfair.com/cepsools/2020/11/Artboard-30-10.png'),
+                //         NetworkImage(
+                //             'https://cdn.pixabay.com/photo/2016/10/06/19/02/clipboard-1719736_960_720.png')
+                //     //
+                //     ),
                 SizedBox(
                   width: 20,
                 ),
@@ -122,8 +124,95 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               controller: _tabController,
               children: [
                 // TAB VIEW MEMO
-                Center(
-                  child: Text("List Memo"),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                  child: GridView.builder(
+                    itemCount: countMemo,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        color:
+                            memoColors[(index % categoryColors.length).floor()],
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Kategori",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                  Container(
+                                    width: 90,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(30),
+                                            bottomLeft: Radius.circular(30),
+                                            bottomRight: Radius.circular(30)),
+                                        color: Color.fromRGBO(
+                                            255, 255, 255, 0.38)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                        Icon(
+                                          Icons.delete,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    this.memoList[index].title,
+                                    style: TextStyle(
+                                        fontSize: 27, color: Colors.white),
+                                  ),
+                                  Text(
+                                    this.memoList[index].description,
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: Container(
+                                  padding:
+                                      EdgeInsets.only(right: 10, bottom: 10),
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    this.memoList[index].date,
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 // TAB VIEW CATEGORY MEMO
@@ -136,7 +225,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         // Menghapus data category dari tabel
                         dbHelper.deleteCategory(this.categoryList[index].id);
                         updateListViewCategory();
-
+                        updateListViewMemo();
                         // Menampilkan snackbar.
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Category Item deleted")));
