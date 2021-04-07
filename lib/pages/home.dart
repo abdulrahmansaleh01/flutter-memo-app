@@ -132,6 +132,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       crossAxisCount: 2,
                     ),
                     itemBuilder: (context, index) {
+                      final descMemoText = this.memoList[index].description;
                       return Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
@@ -183,15 +184,22 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(this.memoList[index].title,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      )),
                                   Text(
-                                    this.memoList[index].title,
+                                    /**
+                                     * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
+                                     * maka karakter selanjutnya akan direplace dengan (...)
+                                     */
+                                    descMemoText.length > 100
+                                        ? '${descMemoText.substring(0, 100)}...'
+                                        : descMemoText,
                                     style: TextStyle(
-                                        fontSize: 27, color: Colors.white),
-                                  ),
-                                  Text(
-                                    this.memoList[index].description,
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.white),
+                                        fontSize: 14, color: Colors.white),
                                   ),
                                 ],
                               ),
