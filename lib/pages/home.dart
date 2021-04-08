@@ -60,14 +60,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             width: double.infinity,
             child: Row(
               children: [
-                // Image(
-                //     image:
-                //         // NetworkImage(
-                //         //     'https://iconfair.com/cepsools/2020/11/Artboard-30-10.png'),
-                //         NetworkImage(
-                //             'https://cdn.pixabay.com/photo/2016/10/06/19/02/clipboard-1719736_960_720.png')
-                //     //
-                //     ),
+                Image(
+                    image:
+                        // NetworkImage(
+                        //     'https://iconfair.com/cepsools/2020/11/Artboard-30-10.png'),
+                        NetworkImage(
+                            'https://cdn.pixabay.com/photo/2016/10/06/19/02/clipboard-1719736_960_720.png')
+                    //
+                    ),
                 SizedBox(
                   width: 20,
                 ),
@@ -399,14 +399,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "Kategori",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
+                                    Expanded(
+                                      child: Container(
+                                        margin: EdgeInsets.only(bottom: 7),
+                                        child: Text(
+                                          "Kategori",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16),
+                                        ),
+                                      ),
                                     ),
                                     Container(
                                       width: 90,
-                                      padding: EdgeInsets.all(10),
+                                      margin: EdgeInsets.only(bottom: 7),
+                                      padding: EdgeInsets.only(
+                                          left: 10,
+                                          right: 10,
+                                          top: 5,
+                                          bottom: 5),
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(30),
@@ -418,15 +429,94 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
-                                          Icon(
-                                            Icons.edit,
-                                            color: Colors.white,
-                                            size: 30,
+                                          InkWell(
+                                            onTap: () async {
+                                              var memoItem =
+                                                  await navigateToEntryFormMemo(
+                                                      context,
+                                                      this.memoList[index]);
+
+                                              dbHelper.updateMemo(memoItem);
+                                              updateListViewMemo();
+                                            },
+                                            child: Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                              size: 27,
+                                            ),
                                           ),
-                                          Icon(
-                                            Icons.delete,
-                                            color: Colors.white,
-                                            size: 30,
+                                          InkWell(
+                                            onTap: () async {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          "Are you sure to delete this memo?"),
+                                                      actions: [
+                                                        //BUTTON "Yes"
+                                                        MaterialButton(
+                                                          color: memoColors[
+                                                              (index %
+                                                                      memoColors
+                                                                          .length)
+                                                                  .floor()],
+                                                          child: Text(
+                                                            "Yes",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+                                                            dbHelper.deleteMemo(
+                                                                this
+                                                                    .memoList[
+                                                                        index]
+                                                                    .id);
+
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            updateListViewMemo();
+                                                          },
+                                                        ),
+
+                                                        //BUTTON "Cancel"
+                                                        MaterialButton(
+                                                          color: memoColors[
+                                                              (index %
+                                                                      memoColors
+                                                                          .length)
+                                                                  .floor()],
+                                                          child: Text(
+                                                            "Cancel",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            child: Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                              size: 27,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -442,6 +532,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         )),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
                                     Text(
                                       /**
                                        * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
@@ -451,7 +544,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                           ? '${descMemoText.substring(0, 100)}...'
                                           : descMemoText,
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.white),
+                                          fontSize: 13, color: Colors.white),
                                     ),
                                   ],
                                 ),
@@ -463,7 +556,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                     child: Text(
                                       this.memoList[index].date,
                                       style: TextStyle(
-                                          fontSize: 18, color: Colors.white),
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle: FontStyle.italic),
                                     ),
                                   ),
                                 ),
