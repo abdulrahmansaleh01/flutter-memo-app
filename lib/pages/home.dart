@@ -136,86 +136,339 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       return Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
-                        color:
-                            memoColors[(index % categoryColors.length).floor()],
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Kategori",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  ),
-                                  Container(
-                                    width: 90,
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(30),
-                                            bottomLeft: Radius.circular(30),
-                                            bottomRight: Radius.circular(30)),
-                                        color: Color.fromRGBO(
-                                            255, 255, 255, 0.38)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Icon(
-                                          Icons.edit,
-                                          color: Colors.white,
-                                          size: 30,
-                                        ),
-                                        Icon(
-                                          Icons.delete,
-                                          color: Colors.white,
-                                          size: 30,
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(this.memoList[index].title,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  Text(
-                                    /**
-                                     * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
-                                     * maka karakter selanjutnya akan direplace dengan (...)
-                                     */
-                                    descMemoText.length > 100
-                                        ? '${descMemoText.substring(0, 100)}...'
-                                        : descMemoText,
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding:
-                                      EdgeInsets.only(right: 10, bottom: 10),
-                                  alignment: Alignment.bottomRight,
-                                  child: Text(
-                                    this.memoList[index].date,
-                                    style: TextStyle(
-                                        fontSize: 18, color: Colors.white),
-                                  ),
+                        color: memoColors[(index % memoColors.length).floor()],
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30),
+                                  topLeft: Radius.circular(30),
                                 ),
                               ),
-                            ],
+                              builder: (BuildContext bc) {
+                                return Padding(
+                                  padding: EdgeInsets.only(left: 25, right: 25),
+                                  child: Container(
+                                    child: SingleChildScrollView(
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minHeight: (MediaQuery.of(context)
+                                              .size
+                                              .height),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              bottom: 250, top: 50),
+                                          child: new Column(
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Text(
+                                                    "Detail Memo",
+                                                    style: TextStyle(
+                                                      fontSize: 20.00,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Divider(
+                                                color: memoColors[
+                                                    (index % memoColors.length)
+                                                        .floor()],
+                                                thickness: 2.5,
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Title:",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5, bottom: 20.0),
+                                                    child: TextField(
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        hintText: this
+                                                            .memoList[index]
+                                                            .title,
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                        ),
+                                                        prefixIcon: Icon(
+                                                          Icons.text_fields,
+                                                          color: memoColors[
+                                                              (index %
+                                                                      memoColors
+                                                                          .length)
+                                                                  .floor()],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Date:",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5, bottom: 20.0),
+                                                    child: TextField(
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        // labelText: 'Category Name',
+                                                        hintText: this
+                                                            .memoList[index]
+                                                            .date,
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                        ),
+                                                        prefixIcon: Icon(
+                                                          Icons.date_range,
+                                                          color: memoColors[
+                                                              (index %
+                                                                      memoColors
+                                                                          .length)
+                                                                  .floor()],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Category:",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5, bottom: 20.0),
+                                                    child: TextField(
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        hintText: this
+                                                            .memoList[index]
+                                                            .categoryId
+                                                            .toString(),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                        ),
+                                                        prefixIcon: Icon(
+                                                          Icons
+                                                              .featured_play_list,
+                                                          color: memoColors[
+                                                              (index %
+                                                                      memoColors
+                                                                          .length)
+                                                                  .floor()],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Description:",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 5.0),
+                                                    child: TextField(
+                                                      enabled: false,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      maxLength: 200,
+                                                      maxLines: 5,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                      decoration:
+                                                          InputDecoration(
+                                                        // labelText: 'Description',
+                                                        hintText: this
+                                                            .memoList[index]
+                                                            .description,
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      5.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      MaterialButton(
+                                                        child: Text(
+                                                          'OK',
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        color: memoColors[
+                                                            (index %
+                                                                    memoColors
+                                                                        .length)
+                                                                .floor()],
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Kategori",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                    Container(
+                                      width: 90,
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(30),
+                                              bottomLeft: Radius.circular(30),
+                                              bottomRight: Radius.circular(30)),
+                                          color: Color.fromRGBO(
+                                              255, 255, 255, 0.38)),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Icon(
+                                            Icons.edit,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                          Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(this.memoList[index].title,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                    Text(
+                                      /**
+                                       * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
+                                       * maka karakter selanjutnya akan direplace dengan (...)
+                                       */
+                                      descMemoText.length > 100
+                                          ? '${descMemoText.substring(0, 100)}...'
+                                          : descMemoText,
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    padding:
+                                        EdgeInsets.only(right: 10, bottom: 10),
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      this.memoList[index].date,
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
