@@ -86,6 +86,19 @@ class DbHelper {
     return countCategory;
   }
 
+  // DELETE MEMO BERDASARKAN KATEGORI
+  // (Ketika Kategorinya dihapus, maka memo yang bersangkutan dengan kategori tersebut akan dihapus juga)
+  Future<int> deleteMemoByCategory(int id) async {
+    Database db = await this.initDb();
+    int countMemo = await db.delete(
+      'memo',
+      where: 'categoryId=?',
+      whereArgs: [id],
+    );
+
+    return countMemo;
+  }
+
   Future<List<Category>> getCategoryList() async {
     var categoryMapList = await selectCategory();
     int countCategory = categoryMapList.length;

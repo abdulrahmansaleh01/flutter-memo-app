@@ -35,6 +35,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (memoList == null || categoryList == null) {
+      memoList = List<Memo>();
+      categoryList = List<Category>();
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

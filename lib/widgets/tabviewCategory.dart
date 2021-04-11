@@ -30,6 +30,8 @@ class TabViewCategory extends StatelessWidget {
           onDismissed: (direction) {
             // Menghapus data category dari tabel
             dbHelper.deleteCategory(this.categoryList[index].id);
+            //Ketika Kategorinya dihapus, maka memo yang bersangkutan dengan kategori tersebut akan dihapus juga
+            dbHelper.deleteMemoByCategory(this.categoryList[index].id);
             updateListViewCategory();
             updateListViewMemo();
             // Menampilkan snackbar.

@@ -38,7 +38,7 @@ class _EntryMemoState extends State<EntryMemo> {
       titleController.text = memo.title;
       dateController.text = memo.date;
       descriptionController.text = memo.description;
-      categoryController.text = memo.categoryId;
+      memo.categoryId = memo.categoryId;
     }
     return Scaffold(
       appBar: AppBar(
