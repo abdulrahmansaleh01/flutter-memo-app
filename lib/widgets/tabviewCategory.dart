@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/widgets/colors.dart';
+import 'package:uts_aplikasi_catatan_memo/widgets/memoByCategory.dart';
 
 class TabViewCategory extends StatelessWidget {
   const TabViewCategory(
@@ -59,68 +60,12 @@ class TabViewCategory extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Category"),
-                    content: Container(
-                      height: 290.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Name:"),
-                          Container(
-                            padding: EdgeInsets.only(top: 5, bottom: 20.0),
-                            child: TextField(
-                              enabled: false,
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                // labelText: 'Category Name',
-                                hintText: this.categoryList[index].name,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                                prefixIcon: Icon(Icons.view_list_outlined),
-                              ),
-                            ),
-                          ),
-                          Text("Description:"),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5.0),
-                            child: TextField(
-                              enabled: false,
-                              keyboardType: TextInputType.text,
-                              maxLength: 200,
-                              maxLines: 5,
-                              decoration: InputDecoration(
-                                // labelText: 'Description',
-                                hintText: this.categoryList[index].description,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      MaterialButton(
-                        color: Colors.blue[400],
-                        textColor: Colors.white,
-                        elevation: 5.0,
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                },
-              );
-            },
+            //menavigasi ke halaman memo berdasarkan kategori dengan mengirimkan nilai id kategori
+            onTap: () => Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (context) =>
+                        new MemoByCategory(category: categoryList[index].id))),
             child: Container(
               height: 80,
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -162,7 +107,7 @@ class TabViewCategory extends StatelessWidget {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            "Tap for show detail",
+                            "Tap for show memos",
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 15,
@@ -175,6 +120,98 @@ class TabViewCategory extends StatelessWidget {
                   Row(
                     children: [
                       InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Category"),
+                                content: Container(
+                                  height: 290.0,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Name:"),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            top: 5, bottom: 20.0),
+                                        child: TextField(
+                                          enabled: false,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          keyboardType: TextInputType.text,
+                                          decoration: InputDecoration(
+                                            // labelText: 'Category Name',
+                                            hintText:
+                                                this.categoryList[index].name,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                            prefixIcon: Icon(
+                                              Icons.view_list_outlined,
+                                              color: categoryColors[(index %
+                                                      categoryColors.length)
+                                                  .floor()],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text("Description:"),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 5.0),
+                                        child: TextField(
+                                          enabled: false,
+                                          keyboardType: TextInputType.text,
+                                          maxLength: 200,
+                                          maxLines: 5,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          decoration: InputDecoration(
+                                            // labelText: 'Description',
+                                            hintText: this
+                                                .categoryList[index]
+                                                .description,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  MaterialButton(
+                                    color: categoryColors[
+                                        (index % categoryColors.length)
+                                            .floor()],
+                                    textColor: Colors.white,
+                                    elevation: 5.0,
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: categoryColors[
+                              (index % categoryColors.length).floor()],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
                         onTap: () async {
                           var categoryItem = await navigateToEntryFormCategory(
                               context, this.categoryList[index]);
@@ -182,7 +219,11 @@ class TabViewCategory extends StatelessWidget {
                           dbHelper.updateCategory(categoryItem);
                           updateListViewCategory();
                         },
-                        child: Icon(Icons.edit_outlined),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          color: categoryColors[
+                              (index % categoryColors.length).floor()],
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.only(left: 20),
