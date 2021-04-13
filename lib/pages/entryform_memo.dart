@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
@@ -25,6 +26,23 @@ class _EntryMemoState extends State<EntryMemo> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
 
+  DateTime _dateTime = DateTime.now();
+
+  _selectedDate(BuildContext context) async {
+    var _pickedDate = await showDatePicker(
+        context: context,
+        initialDate: _dateTime,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100));
+
+    if (_pickedDate != null) {
+      setState(() {
+        _dateTime = _pickedDate;
+        dateController.text = DateFormat('yyyy/MM/dd').format(_pickedDate);
+      });
+    }
+  }
+
   void callback(Category _selectedCategory) {
     setState(() {
       selectedCategory = _selectedCategory;
@@ -44,7 +62,7 @@ class _EntryMemoState extends State<EntryMemo> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context, memo),
         ),
         title: memo == null
             ? Text(
@@ -97,11 +115,17 @@ class _EntryMemoState extends State<EntryMemo> {
                 controller: dateController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: 'Enter Date (DD/MM/YYYY)',
+                  labelText: 'Date',
+                  hintText: 'Pick a Date',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  prefixIcon: Icon(Icons.date_range),
+                  prefixIcon: InkWell(
+                    onTap: () {
+                      _selectedDate(context);
+                    },
+                    child: Icon(Icons.date_range),
+                  ),
                 ),
                 onChanged: (value) {},
               ),
