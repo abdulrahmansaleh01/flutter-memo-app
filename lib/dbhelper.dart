@@ -165,6 +165,30 @@ class DbHelper {
 
     return memoList;
   }
+
+  Future<List<Map<String, dynamic>>> selectMemoByCategory(
+      int categoryId) async {
+    Database db = await this.initDb();
+    var mapListMemo = await db.query(
+      'memo',
+      where: 'categoryId=?',
+      whereArgs: [categoryId],
+    );
+
+    return mapListMemo;
+  }
+
+  Future<List<Memo>> getMemoListByCategory(int categoryId) async {
+    var memoMapList = await selectMemoByCategory(categoryId);
+    int countMemo = memoMapList.length;
+    List<Memo> memoList = List<Memo>();
+
+    for (int i = 0; i < countMemo; i++) {
+      memoList.add(Memo.fromMap(memoMapList[i]));
+    }
+
+    return memoList;
+  }
 //---------------------------------------------------------------
 
   factory DbHelper() {
