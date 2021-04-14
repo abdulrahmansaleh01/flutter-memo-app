@@ -15,7 +15,7 @@ class ShowDetailMemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 25, right: 25),
+      padding: EdgeInsets.only(left: 25, right: 23),
       child: Container(
         child: SingleChildScrollView(
           child: ConstrainedBox(
@@ -32,8 +32,8 @@ class ShowDetailMemo extends StatelessWidget {
                       Text(
                         "Detail Memo",
                         style: TextStyle(
-                          fontSize: 20.00,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
@@ -41,7 +41,7 @@ class ShowDetailMemo extends StatelessWidget {
                   ),
                   Divider(
                     color: memoColors[(index % memoColors.length).floor()],
-                    thickness: 2.5,
+                    thickness: 3.7,
                   ),
                   SizedBox(
                     height: 20,
@@ -51,10 +51,17 @@ class ShowDetailMemo extends StatelessWidget {
                     children: [
                       Text(
                         "Title:",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 16),
                       ),
                       Container(
-                        padding: EdgeInsets.only(top: 5, bottom: 20.0),
+                        margin: EdgeInsets.only(top: 5, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.black),
+                          borderRadius: BorderRadius.circular(8.0),
+                          color:
+                              memoColors[(index % memoColors.length).floor()],
+                        ),
                         child: TextField(
                           enabled: false,
                           keyboardType: TextInputType.text,
@@ -63,23 +70,34 @@ class ShowDetailMemo extends StatelessWidget {
                           ),
                           decoration: InputDecoration(
                             hintText: this.memoList[index].title,
+                            hintStyle: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             prefixIcon: Icon(
                               Icons.text_fields,
-                              color: memoColors[
-                                  (index % memoColors.length).floor()],
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
                       Text(
                         "Date:",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 16),
                       ),
                       Container(
-                        padding: EdgeInsets.only(top: 5, bottom: 20.0),
+                        margin: EdgeInsets.only(top: 5, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.black),
+                          borderRadius: BorderRadius.circular(8.0),
+                          color:
+                              memoColors[(index % memoColors.length).floor()],
+                        ),
                         child: TextField(
                           enabled: false,
                           keyboardType: TextInputType.text,
@@ -89,23 +107,34 @@ class ShowDetailMemo extends StatelessWidget {
                           decoration: InputDecoration(
                             // labelText: 'Category Name',
                             hintText: this.memoList[index].date,
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 17,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             prefixIcon: Icon(
                               Icons.date_range,
-                              color: memoColors[
-                                  (index % memoColors.length).floor()],
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
                       Text(
                         "Category:",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 16),
                       ),
                       Container(
-                        padding: EdgeInsets.only(top: 5, bottom: 20.0),
+                        margin: EdgeInsets.only(top: 5, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.black),
+                          borderRadius: BorderRadius.circular(8.0),
+                          color:
+                              memoColors[(index % memoColors.length).floor()],
+                        ),
                         child: TextField(
                           enabled: false,
                           keyboardType: TextInputType.text,
@@ -115,34 +144,48 @@ class ShowDetailMemo extends StatelessWidget {
                           decoration: InputDecoration(
                             hintText:
                                 this.memoList[index].categoryId.toString(),
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             prefixIcon: Icon(
                               Icons.featured_play_list,
-                              color: memoColors[
-                                  (index % memoColors.length).floor()],
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
                       Text(
                         "Description:",
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 16),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5.0),
+                      Container(
+                        margin: EdgeInsets.only(top: 5.0, bottom: 10.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.black),
+                          borderRadius: BorderRadius.circular(8.0),
+                          color:
+                              memoColors[(index % memoColors.length).floor()],
+                        ),
                         child: TextField(
                           enabled: false,
                           keyboardType: TextInputType.text,
-                          maxLength: 200,
-                          maxLines: 5,
+                          maxLines: 6,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: InputDecoration(
                             // labelText: 'Description',
                             hintText: this.memoList[index].description,
+                            hintStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5.0),
                             ),
@@ -153,6 +196,10 @@ class ShowDetailMemo extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           MaterialButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                side: BorderSide(
+                                    color: Colors.black, width: 2.0)),
                             child: Text(
                               'OK',
                               style: TextStyle(

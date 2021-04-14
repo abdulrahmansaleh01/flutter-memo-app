@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
-import 'package:uts_aplikasi_catatan_memo/pages/entryform_memo.dart';
 import 'package:uts_aplikasi_catatan_memo/widgets/tabViewMemo.dart';
 
 class MemoByCategory extends StatefulWidget {
@@ -50,16 +49,19 @@ class _MemoByCategoryState extends State<MemoByCategory> {
         ],
         // leading: Icon(Icons.keyboard_arrow_left),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: TabViewMemo(
-              countMemo: countMemo,
-              memoList: _memoList,
-              dbHelper: dbHelper,
+      body: Container(
+        margin: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: TabViewMemo(
+                countMemo: countMemo,
+                memoList: _memoList,
+                dbHelper: dbHelper,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
