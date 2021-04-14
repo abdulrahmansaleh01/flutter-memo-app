@@ -53,7 +53,7 @@ class TabViewMemo extends StatelessWidget {
               padding: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                   color: memoColors[(index % memoColors.length).floor()],
-                  // border: Border.all(width: 2, color: Colors.black),
+                  border: Border.all(width: 2, color: Colors.black),
                   borderRadius: BorderRadius.circular(8.0)),
               child: Column(
                 children: <Widget>[

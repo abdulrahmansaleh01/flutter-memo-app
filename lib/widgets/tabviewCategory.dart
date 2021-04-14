@@ -42,6 +42,7 @@ class TabViewCategory extends StatelessWidget {
           // Menampilkan background saat item telah di-swipe (hapus).
           background: Container(
             color: categoryColors[(index % categoryColors.length).floor()],
+            margin: EdgeInsets.only(top: 10, bottom: 10),
             padding: EdgeInsets.only(right: 10, left: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,15 +69,19 @@ class TabViewCategory extends StatelessWidget {
                         new MemoByCategory(category: categoryList[index].id))),
             child: Container(
               height: 80,
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: EdgeInsets.only(top: 8, left: 10, right: 10, bottom: 10),
               // color: Colors.white,
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    offset: Offset(0, 9),
-                    blurRadius: 20,
-                    spreadRadius: 1)
-              ]),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 2, color: Colors.black),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        offset: Offset(0, 9),
+                        blurRadius: 20,
+                        spreadRadius: 1)
+                  ]),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -125,56 +130,79 @@ class TabViewCategory extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: Text("Category"),
+                                title: Text(
+                                  "Category",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 content: Container(
                                   height: 290.0,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Name:"),
+                                      Text(
+                                        "Name:",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800),
+                                      ),
                                       Container(
-                                        padding: EdgeInsets.only(
+                                        decoration: BoxDecoration(
+                                            color: categoryColors[
+                                                (index % categoryColors.length)
+                                                    .floor()],
+                                            border: Border.all(
+                                                width: 2, color: Colors.black),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
+                                        margin: EdgeInsets.only(
                                             top: 5, bottom: 20.0),
                                         child: TextField(
                                           enabled: false,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
                                           keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
                                             // labelText: 'Category Name',
                                             hintText:
                                                 this.categoryList[index].name,
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
+                                            hintStyle: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                             prefixIcon: Icon(
                                               Icons.view_list_outlined,
-                                              color: categoryColors[(index %
-                                                      categoryColors.length)
-                                                  .floor()],
+                                              color: Colors.white,
                                             ),
                                           ),
                                         ),
                                       ),
-                                      Text("Description:"),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5.0),
+                                      Text(
+                                        "Description:",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5.0),
+                                        decoration: BoxDecoration(
+                                            color: categoryColors[
+                                                (index % categoryColors.length)
+                                                    .floor()],
+                                            border: Border.all(
+                                                width: 2, color: Colors.black),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0)),
                                         child: TextField(
                                           enabled: false,
                                           keyboardType: TextInputType.text,
-                                          maxLength: 200,
                                           maxLines: 5,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                          ),
                                           decoration: InputDecoration(
                                             // labelText: 'Description',
                                             hintText: this
                                                 .categoryList[index]
                                                 .description,
+                                            hintStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                             border: OutlineInputBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
@@ -187,6 +215,11 @@ class TabViewCategory extends StatelessWidget {
                                 ),
                                 actions: [
                                   MaterialButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        side: BorderSide(
+                                            color: Colors.black, width: 2.0)),
                                     color: categoryColors[
                                         (index % categoryColors.length)
                                             .floor()],
@@ -230,7 +263,7 @@ class TabViewCategory extends StatelessWidget {
                         color: categoryColors[
                             (index % categoryColors.length).floor()],
                         height: double.infinity,
-                        width: 4,
+                        width: 10,
                       )
                     ],
                   ),
