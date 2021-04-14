@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
-import 'package:uts_aplikasi_catatan_memo/widgets/dropdown_category.dart';
 
 class EntryMemo extends StatefulWidget {
   final Memo memo;
@@ -24,7 +23,28 @@ class _EntryMemoState extends State<EntryMemo> {
   TextEditingController titleController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
+
+  var _selectedValue;
+  var _categories = List<DropdownMenuItem>();
+
+  @override
+  void initState() {
+    _loadCategories();
+    super.initState();
+  }
+
+  _loadCategories() async {
+    //variabel untuk memanggil data kategori untuk ditampilkan pada DropdownMenuItem
+    var categories = await dbHelper.getCategoryList();
+    categories.forEach((category) {
+      setState(() {
+        _categories.add(DropdownMenuItem(
+          child: Text(category.name),
+          value: category.id,
+        ));
+      });
+    });
+  }
 
   DateTime _dateTime = DateTime.now();
 
@@ -131,16 +151,16 @@ class _EntryMemoState extends State<EntryMemo> {
               ),
             ),
 
-            // kategori
-
-            FutureBuilder<List<Category>>(
-              future: dbHelper.getCategoryList(),
-              builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? DropdownCategory(snapshot.data, callback)
-                    : Text("no category");
-              },
-            ),
+            // KATEGORI
+            DropdownButtonFormField(
+                value: _selectedValue,
+                items: _categories,
+                hint: Text('Select Category'),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedValue = value;
+                  });
+                }),
 
             // DESKRIPSI
             Padding(
@@ -177,14 +197,18 @@ class _EntryMemoState extends State<EntryMemo> {
                       onPressed: () {
                         if (memo == null) {
                           //tambah data
-                          memo = Memo(titleController.text, dateController.text,
-                              descriptionController.text, selectedCategory.id);
+                          memo = Memo(
+                              titleController.text,
+                              dateController.text,
+                              descriptionController.text,
+                              int.parse(_selectedValue.toString()));
                         } else {
                           //ubah data
                           memo.title = titleController.text;
                           memo.date = dateController.text;
                           memo.description = descriptionController.text;
-                          memo.categoryId = selectedCategory.id;
+                          memo.categoryId =
+                              int.parse(_selectedValue.toString());
                         }
 
                         //kembali ke layar sebelumnya dengan membawa objek memo
