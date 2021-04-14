@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
 import 'package:uts_aplikasi_catatan_memo/widgets/colors.dart';
@@ -21,192 +22,377 @@ class TabViewMemo extends StatelessWidget {
   final Function navigateToEntryFormMemo;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-      child: GridView.builder(
-        itemCount: countMemo,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemBuilder: (context, index) {
-          final descMemoText = this.memoList[index].description;
-          return Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: memoColors[(index % memoColors.length).floor()],
-            child: InkWell(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30),
-                      topLeft: Radius.circular(30),
-                    ),
-                  ),
-                  builder: (BuildContext bc) {
-                    return ShowDetailMemo(
-                      memoList: memoList,
-                      index: index,
-                    );
-                  },
+    return StaggeredGridView.countBuilder(
+      physics: BouncingScrollPhysics(),
+      crossAxisCount: 4,
+      itemCount: countMemo,
+      itemBuilder: (BuildContext context, int index) {
+        final descMemoText = this.memoList[index].description;
+        return InkWell(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(30),
+                ),
+              ),
+              builder: (BuildContext bc) {
+                return ShowDetailMemo(
+                  memoList: memoList,
+                  index: index,
                 );
-                // DetailMemo(context, index);
               },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 7),
-                            child: Text(
-                              "Kategori",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                  color: memoColors[(index % memoColors.length).floor()],
+                  // border: Border.all(width: 2, color: Colors.black),
+                  borderRadius: BorderRadius.circular(8.0)),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            this.memoList[index].title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white),
+                            // style: Theme.of(context).textTheme.body1,
                           ),
                         ),
-                        Container(
-                          width: 90,
-                          margin: EdgeInsets.only(bottom: 7),
-                          padding: EdgeInsets.only(
-                              left: 10, right: 10, top: 5, bottom: 5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  bottomLeft: Radius.circular(30),
-                                  bottomRight: Radius.circular(30)),
-                              color: Color.fromRGBO(255, 255, 255, 0.38)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              InkWell(
-                                onTap: () async {
-                                  var memoItem = await navigateToEntryFormMemo(
-                                      context, this.memoList[index]);
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30),
+                                bottomLeft: Radius.circular(30),
+                                bottomRight: Radius.circular(30)),
+                            color: Color.fromRGBO(255, 255, 255, 0.38)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                var memoItem = await navigateToEntryFormMemo(
+                                    context, this.memoList[index]);
 
-                                  dbHelper.updateMemo(memoItem);
-                                  updateListViewMemo();
-                                },
-                                child: Icon(
-                                  Icons.edit,
-                                  color: Colors.white,
-                                  size: 27,
-                                ),
+                                dbHelper.updateMemo(memoItem);
+                                updateListViewMemo();
+                              },
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 25,
                               ),
-                              InkWell(
-                                onTap: () async {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              "Are you sure to delete this memo?"),
-                                          actions: [
-                                            //BUTTON "Yes"
-                                            MaterialButton(
-                                              color: memoColors[
-                                                  (index % memoColors.length)
-                                                      .floor()],
-                                              child: Text(
-                                                "Yes",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                            "Are you sure to delete this memo?"),
+                                        actions: [
+                                          //BUTTON "Yes"
+                                          MaterialButton(
+                                            color: memoColors[
+                                                (index % memoColors.length)
+                                                    .floor()],
+                                            child: Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              onPressed: () {
-                                                dbHelper.deleteMemo(
-                                                    this.memoList[index].id);
-
-                                                Navigator.of(context).pop();
-                                                updateListViewMemo();
-                                              },
                                             ),
+                                            onPressed: () {
+                                              dbHelper.deleteMemo(
+                                                  this.memoList[index].id);
 
-                                            //BUTTON "Cancel"
-                                            MaterialButton(
-                                              color: memoColors[
-                                                  (index % memoColors.length)
-                                                      .floor()],
-                                              child: Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                              Navigator.of(context).pop();
+                                              updateListViewMemo();
+                                            },
+                                          ),
+
+                                          //BUTTON "Cancel"
+                                          MaterialButton(
+                                            color: memoColors[
+                                                (index % memoColors.length)
+                                                    .floor()],
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
                                             ),
-                                          ],
-                                        );
-                                      });
-                                },
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                  size: 27,
-                                ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 25,
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      )
+                      // Text(
+                      //   this.memoList[index].categoryId.toString(),
+                      //   style: TextStyle(),
+                      // ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 20.0, left: 8.0, right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            /**
+                           * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
+                           * maka karakter selanjutnya akan direplace dengan (...)
+                           */
+                            descMemoText.length > 100
+                                ? '${descMemoText.substring(0, 100)}...'
+                                : descMemoText,
+                            style: TextStyle(fontSize: 13, color: Colors.white),
                           ),
                         )
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(this.memoList[index].title,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        SizedBox(
-                          height: 5,
-                        ),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
                         Text(
-                          /**
-                           * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
-                           * maka karakter selanjutnya akan direplace dengan (...)
-                           */
-                          descMemoText.length > 100
-                              ? '${descMemoText.substring(0, 100)}...'
-                              : descMemoText,
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(right: 10, bottom: 10),
-                        alignment: Alignment.bottomRight,
-                        child: Text(
                           this.memoList[index].date,
                           style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.white,
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
+                              color: Colors.white,
                               fontStyle: FontStyle.italic),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
+                      ])
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
+      staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
     );
+    // return Padding(
+    //   padding: EdgeInsets.only(top: 12.0, bottom: 12.0, left: 3, right: 3),
+    //   child: GridView.builder(
+    //     itemCount: countMemo,
+    //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //       crossAxisCount: 2,
+    //     ),
+    //     itemBuilder: (context, index) {
+    //       final descMemoText = this.memoList[index].description;
+    //       return Card(
+    //         shape:
+    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    //         color: memoColors[(index % memoColors.length).floor()],
+    //         child: InkWell(
+    //           onTap: () {
+    //             showModalBottomSheet(
+    //               context: context,
+    //               isScrollControlled: true,
+    //               shape: RoundedRectangleBorder(
+    //                 borderRadius: BorderRadius.only(
+    //                   topRight: Radius.circular(30),
+    //                   topLeft: Radius.circular(30),
+    //                 ),
+    //               ),
+    //               builder: (BuildContext bc) {
+    //                 return ShowDetailMemo(
+    //                   memoList: memoList,
+    //                   index: index,
+    //                 );
+    //               },
+    //             );
+    //             // DetailMemo(context, index);
+    //           },
+    //           child: Padding(
+    //             padding: const EdgeInsets.only(left: 10),
+    //             child: Column(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 Row(
+    //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                   children: [
+    //                     Expanded(
+    //                       child: Container(
+    //                         margin: EdgeInsets.only(bottom: 7),
+    //                         child: Text(
+    //                           "Kategori",
+    //                           style:
+    //                               TextStyle(color: Colors.white, fontSize: 16),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     Container(
+    //                       width: 90,
+    //                       margin: EdgeInsets.only(bottom: 7),
+    //                       padding: EdgeInsets.only(
+    //                           left: 10, right: 10, top: 5, bottom: 5),
+    //                       decoration: BoxDecoration(
+    //                           borderRadius: BorderRadius.only(
+    //                               topLeft: Radius.circular(30),
+    //                               bottomLeft: Radius.circular(30),
+    //                               bottomRight: Radius.circular(30)),
+    //                           color: Color.fromRGBO(255, 255, 255, 0.38)),
+    //                       child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //                         children: [
+    //                           InkWell(
+    //                             onTap: () async {
+    //                               var memoItem = await navigateToEntryFormMemo(
+    //                                   context, this.memoList[index]);
+
+    //                               dbHelper.updateMemo(memoItem);
+    //                               updateListViewMemo();
+    //                             },
+    //                             child: Icon(
+    //                               Icons.edit,
+    //                               color: Colors.white,
+    //                               size: 27,
+    //                             ),
+    //                           ),
+    //                           InkWell(
+    //                             onTap: () async {
+    //                               showDialog(
+    //                                   context: context,
+    //                                   builder: (context) {
+    //                                     return AlertDialog(
+    //                                       title: Text(
+    //                                           "Are you sure to delete this memo?"),
+    //                                       actions: [
+    //                                         //BUTTON "Yes"
+    //                                         MaterialButton(
+    //                                           color: memoColors[
+    //                                               (index % memoColors.length)
+    //                                                   .floor()],
+    //                                           child: Text(
+    //                                             "Yes",
+    //                                             style: TextStyle(
+    //                                               color: Colors.white,
+    //                                               fontWeight: FontWeight.bold,
+    //                                             ),
+    //                                           ),
+    //                                           onPressed: () {
+    //                                             dbHelper.deleteMemo(
+    //                                                 this.memoList[index].id);
+
+    //                                             Navigator.of(context).pop();
+    //                                             updateListViewMemo();
+    //                                           },
+    //                                         ),
+
+    //                                         //BUTTON "Cancel"
+    //                                         MaterialButton(
+    //                                           color: memoColors[
+    //                                               (index % memoColors.length)
+    //                                                   .floor()],
+    //                                           child: Text(
+    //                                             "Cancel",
+    //                                             style: TextStyle(
+    //                                               color: Colors.white,
+    //                                               fontWeight: FontWeight.bold,
+    //                                             ),
+    //                                           ),
+    //                                           onPressed: () {
+    //                                             Navigator.of(context).pop();
+    //                                           },
+    //                                         ),
+    //                                       ],
+    //                                     );
+    //                                   });
+    //                             },
+    //                             child: Icon(
+    //                               Icons.delete,
+    //                               color: Colors.white,
+    //                               size: 27,
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //                 Column(
+    //                   crossAxisAlignment: CrossAxisAlignment.start,
+    //                   children: [
+    //                     Text(this.memoList[index].title,
+    //                         style: TextStyle(
+    //                           fontSize: 20,
+    //                           color: Colors.white,
+    //                           fontWeight: FontWeight.bold,
+    //                         )),
+    //                     SizedBox(
+    //                       height: 5,
+    //                     ),
+    //                     Text(
+    //                       /**
+    //                        * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
+    //                        * maka karakter selanjutnya akan direplace dengan (...)
+    //                        */
+    //                       descMemoText.length > 100
+    //                           ? '${descMemoText.substring(0, 100)}...'
+    //                           : descMemoText,
+    //                       style: TextStyle(fontSize: 13, color: Colors.white),
+    //                     ),
+    //                   ],
+    //                 ),
+    //                 Expanded(
+    //                   child: Container(
+    //                     padding: EdgeInsets.only(right: 10, bottom: 10),
+    //                     alignment: Alignment.bottomRight,
+    //                     child: Text(
+    //                       this.memoList[index].date,
+    //                       style: TextStyle(
+    //                           fontSize: 15,
+    //                           color: Colors.white,
+    //                           fontWeight: FontWeight.w500,
+    //                           fontStyle: FontStyle.italic),
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 
   // Future DetailMemo(BuildContext context, int index) {
