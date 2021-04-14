@@ -35,8 +35,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (memoList == null || categoryList == null) {
+    if (memoList == null) {
       memoList = List<Memo>();
+    }
+
+    if (categoryList == null) {
       categoryList = List<Category>();
     }
     return Scaffold(
@@ -60,42 +63,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 35, top: 15, bottom: 15),
-            height: 100,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Image(
-                    image:
-                        // NetworkImage(
-                        //     'https://iconfair.com/cepsools/2020/11/Artboard-30-10.png'),
-                        NetworkImage(
-                            'https://cdn.pixabay.com/photo/2016/10/06/19/02/clipboard-1719736_960_720.png')
-                    //
-                    ),
-                SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hi !",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "Make your day enjoy by making reminders :)",
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          Container(
+            margin: EdgeInsets.only(top: 10, bottom: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Colors.grey[200],
@@ -104,12 +72,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               isScrollable: true,
               indicatorPadding: EdgeInsets.all(10),
               labelColor: Colors.white,
-              unselectedLabelColor: Colors.blue[400],
+              unselectedLabelColor: Colors.grey[850],
               labelStyle: TextStyle(fontSize: 20),
               labelPadding:
                   EdgeInsets.only(left: 35, right: 35, top: 12, bottom: 12),
               indicator: BoxDecoration(
-                  color: Colors.blue[400],
+                  color: Colors.grey[850],
                   borderRadius: BorderRadius.circular(20)),
               controller: _tabController,
               indicatorColor: Color(0xFF417BFB),
@@ -119,8 +87,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 });
               },
               tabs: [
-                Text("Your Memo"),
-                Text("Category"),
+                Text(
+                  "Your Memo",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Category",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
               ],
             ),
           ),
@@ -156,7 +130,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _bottomButtons() {
     return indexTab == 0
         ? FloatingActionButton(
-            shape: StadiumBorder(),
+            shape:
+                CircleBorder(side: BorderSide(color: Colors.black, width: 2.0)),
             onPressed: () async {
               var memo = await navigateToEntryFormMemo(context, null);
               if (memo != null) {
@@ -167,11 +142,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 }
               }
             },
-            backgroundColor: Colors.blue[400],
-            child: Icon(Icons.post_add_sharp),
+            backgroundColor: Colors.grey[850],
+            child: Icon(
+              Icons.post_add_sharp,
+              color: Colors.white,
+            ),
           )
         : FloatingActionButton(
-            shape: StadiumBorder(),
+            shape:
+                CircleBorder(side: BorderSide(color: Colors.black, width: 2.0)),
             onPressed: () async {
               var category = await navigateToEntryFormCategory(context, null);
               if (category != null) {
@@ -182,9 +161,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 }
               }
             },
-            backgroundColor: Colors.blue[400],
+            backgroundColor: Colors.grey[850],
             child: Icon(
               Icons.add,
+              color: Colors.white,
             ),
           );
   }
