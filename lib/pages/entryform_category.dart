@@ -30,7 +30,7 @@ class _EntryCategoryState extends State<EntryCategory> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context, category),
         ),
         title: category == null
             ? Text(
@@ -45,11 +45,41 @@ class _EntryCategoryState extends State<EntryCategory> {
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.short_text,
-              color: Colors.black,
-              size: 33,
+          InkWell(
+            onTap: () {
+              Navigator.pop(context, category);
+            },
+            child: IconButton(
+              icon: Icon(
+                Icons.cancel_outlined,
+                color: Colors.black,
+                size: 33,
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              if (category == null) {
+                //tambah data
+                category = Category(
+                  nameController.text,
+                  descriptionController.text,
+                );
+              } else {
+                //ubah data
+                category.name = nameController.text;
+                category.description = descriptionController.text;
+              }
+
+              //kembali ke layar sebelumnya dengan membawa objek category
+              Navigator.pop(context, category);
+            },
+            child: IconButton(
+              icon: Icon(
+                Icons.check,
+                color: Colors.black,
+                size: 33,
+              ),
             ),
           ),
         ],
@@ -57,33 +87,42 @@ class _EntryCategoryState extends State<EntryCategory> {
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
-        child: ListView(
+        child: Column(
           children: <Widget>[
             // NAMA
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            Container(
+              padding: EdgeInsets.only(top: 7.0),
               child: TextField(
                 controller: nameController,
                 keyboardType: TextInputType.text,
+                maxLength: 15,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
                 decoration: InputDecoration(
-                  labelText: 'Category Name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+                  hintText: "Category Name",
+                  hintStyle: TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
                   ),
-                  prefixIcon: Icon(Icons.view_list_outlined),
+                  prefixIcon:
+                      Icon(Icons.view_list_outlined, color: Colors.black),
                 ),
                 onChanged: (value) {},
               ),
             ),
 
             // DESKRIPSI
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            Container(
+              margin: EdgeInsets.only(top: 10.0),
               child: TextField(
                 controller: descriptionController,
                 keyboardType: TextInputType.text,
                 maxLength: 200,
                 maxLines: 5,
+                style: TextStyle(fontWeight: FontWeight.w500),
                 decoration: InputDecoration(
                   labelText: 'Description',
                   border: OutlineInputBorder(
@@ -93,61 +132,6 @@ class _EntryCategoryState extends State<EntryCategory> {
                 onChanged: (value) {},
               ),
             ),
-
-            // BUTTON
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Row(
-                children: <Widget>[
-                  //BUTTON "Simpan"
-                  Expanded(
-                    child: RaisedButton(
-                      color: Colors.blue[400],
-                      textColor: Colors.white,
-                      child: Text(
-                        'Save',
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: () {
-                        if (category == null) {
-                          //tambah data
-                          category = Category(
-                            nameController.text,
-                            descriptionController.text,
-                          );
-                        } else {
-                          //ubah data
-                          category.name = nameController.text;
-                          category.description = descriptionController.text;
-                        }
-
-                        //kembali ke layar sebelumnya dengan membawa objek category
-                        Navigator.pop(context, category);
-                      },
-                    ),
-                  ),
-
-                  Container(
-                    width: 5.0,
-                  ),
-
-                  //BUTTON "Batal"
-                  Expanded(
-                    child: RaisedButton(
-                      color: Colors.blue[400],
-                      textColor: Colors.white,
-                      child: Text(
-                        'Cancel',
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context, category);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

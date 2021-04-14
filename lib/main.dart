@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Memo Application',
+      theme: ThemeData(primaryColor: Colors.black),
       home: Home(),
     );
   }
