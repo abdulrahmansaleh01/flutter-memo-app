@@ -103,21 +103,74 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               controller: _tabController,
               children: [
                 // TAB VIEW MEMO
-                TabViewMemo(
-                    countMemo: countMemo,
-                    memoList: memoList,
-                    dbHelper: dbHelper,
-                    updateListViewMemo: updateListViewMemo,
-                    navigateToEntryFormMemo: navigateToEntryFormMemo),
+                memoList.length > 0
+                    ? TabViewMemo(
+                        countMemo: countMemo,
+                        memoList: memoList,
+                        dbHelper: dbHelper,
+                        updateListViewMemo: updateListViewMemo,
+                        navigateToEntryFormMemo: navigateToEntryFormMemo)
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 17),
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              // color: Colors.blue,
+                              image: DecorationImage(
+                                // fit: BoxFit.fill,
+                                image: AssetImage('assets/memo-icon.png'),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text("No memo yet :(",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                  color: Colors.grey[850]))
+                        ],
+                      ),
 
                 // TAB VIEW CATEGORY MEMO
-                TabViewCategory(
-                    countCategory: countCategory,
-                    categoryList: categoryList,
-                    dbHelper: dbHelper,
-                    updateListViewCategory: updateListViewCategory,
-                    updateListViewMemo: updateListViewMemo,
-                    navigateToEntryFormCategory: navigateToEntryFormCategory),
+                categoryList.length > 0
+                    ? TabViewCategory(
+                        countCategory: countCategory,
+                        categoryList: categoryList,
+                        dbHelper: dbHelper,
+                        updateListViewCategory: updateListViewCategory,
+                        updateListViewMemo: updateListViewMemo,
+                        navigateToEntryFormCategory:
+                            navigateToEntryFormCategory)
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 10),
+                            width: 170,
+                            height: 170,
+                            decoration: BoxDecoration(
+                              // color: Colors.blue,
+                              image: DecorationImage(
+                                // fit: BoxFit.fill,
+                                image: AssetImage('assets/category-icon.png'),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text("No category yet :(",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                  color: Colors.grey[850]))
+                        ],
+                      ),
               ],
             ),
           )
