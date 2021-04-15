@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
+import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
 import 'package:uts_aplikasi_catatan_memo/widgets/tabViewMemo.dart';
 
@@ -13,12 +14,15 @@ class MemoByCategory extends StatefulWidget {
 }
 
 class _MemoByCategoryState extends State<MemoByCategory> {
-  List<Memo> _memoList = List<Memo>();
+  List<Memo> memoList = List<Memo>();
+  List<Category> categoryList = List<Category>();
   DbHelper dbHelper = DbHelper();
   int countMemo = 0;
+  int countCategory = 0;
 
   @override
   void initState() {
+    updateListViewCategory();
     updateListViewMemoCategory();
     super.initState();
   }
@@ -32,7 +36,7 @@ class _MemoByCategoryState extends State<MemoByCategory> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          "My Memo",
+          getCategoryName(this.widget.category).toString(),
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -56,7 +60,8 @@ class _MemoByCategoryState extends State<MemoByCategory> {
             Expanded(
               child: TabViewMemo(
                 countMemo: countMemo,
-                memoList: _memoList,
+                memoList: memoList,
+                categoryList: categoryList,
                 dbHelper: dbHelper,
               ),
             ),
@@ -76,12 +81,43 @@ class _MemoByCategoryState extends State<MemoByCategory> {
         memoListFuture.then((memoList) {
           setState(
             () {
-              this._memoList = memoList;
+              this.memoList = memoList;
               this.countMemo = memoList.length;
             },
           );
         });
       },
     );
+  }
+
+  //Memanggil data kategori untuk menyesuaikan antara nama kategori dengan id kategori memo
+  void updateListViewCategory() {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then(
+      (database) {
+        //SELECT data category dari DB
+        Future<List<Category>> categoryListFuture = dbHelper.getCategoryList();
+        categoryListFuture.then((categoryList) {
+          setState(
+            () {
+              this.categoryList = categoryList;
+              this.countCategory = categoryList.length;
+            },
+          );
+        });
+      },
+    );
+  }
+
+  /**
+   * Tipe String yang digunakan untuk mengambil nama kategori yang memiliki parameter 
+   * untuk menerima nilai yang dikirimkan oleh id kategori memo 
+   */
+  String getCategoryName(int categoryId) {
+    for (Category c in categoryList) {
+      if (c.id == this.widget.category) {
+        return c.name;
+      }
+    }
   }
 }

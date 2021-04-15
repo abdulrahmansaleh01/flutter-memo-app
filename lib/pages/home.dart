@@ -107,6 +107,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ? TabViewMemo(
                         countMemo: countMemo,
                         memoList: memoList,
+                        categoryList: categoryList,
                         dbHelper: dbHelper,
                         updateListViewMemo: updateListViewMemo,
                         navigateToEntryFormMemo: navigateToEntryFormMemo)
@@ -118,9 +119,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             width: 150,
                             height: 150,
                             decoration: BoxDecoration(
-                              // color: Colors.blue,
                               image: DecorationImage(
-                                // fit: BoxFit.fill,
                                 image: AssetImage('assets/memo-icon.png'),
                               ),
                             ),

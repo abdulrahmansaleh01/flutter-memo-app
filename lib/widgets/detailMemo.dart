@@ -7,11 +7,12 @@ class ShowDetailMemo extends StatelessWidget {
     Key key,
     @required this.memoList,
     @required this.index,
+    @required this.getCategoryName,
   }) : super(key: key);
 
   final List<Memo> memoList;
   final int index;
-
+  final Function getCategoryName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -142,8 +143,8 @@ class ShowDetailMemo extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
-                            hintText:
-                                this.memoList[index].categoryId.toString(),
+                            hintText: getCategoryName(
+                                this.memoList[index].categoryId),
                             hintStyle: TextStyle(
                               color: Colors.white,
                               fontSize: 17,
