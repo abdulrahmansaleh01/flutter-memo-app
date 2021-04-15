@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uts_aplikasi_catatan_memo/dbhelper.dart';
 import 'package:uts_aplikasi_catatan_memo/models/categoryMemo.dart';
 import 'package:uts_aplikasi_catatan_memo/models/memo.dart';
-import 'package:uts_aplikasi_catatan_memo/widgets/tabViewMemo.dart';
+import 'package:uts_aplikasi_catatan_memo/widgets/colors.dart';
+import 'package:uts_aplikasi_catatan_memo/widgets/detailMemo.dart';
 
 class MemoByCategory extends StatefulWidget {
   final int category;
@@ -23,7 +25,7 @@ class _MemoByCategoryState extends State<MemoByCategory> {
   @override
   void initState() {
     updateListViewCategory();
-    updateListViewMemoCategory();
+    updateListViewMemoByCategory();
     super.initState();
   }
 
@@ -53,25 +55,162 @@ class _MemoByCategoryState extends State<MemoByCategory> {
         ],
         // leading: Icon(Icons.keyboard_arrow_left),
       ),
-      body: Container(
-        margin: EdgeInsets.all(8),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: TabViewMemo(
-                countMemo: countMemo,
-                memoList: memoList,
-                categoryList: categoryList,
-                dbHelper: dbHelper,
+      body: memoList.length > 0
+          ? Container(
+              margin: EdgeInsets.all(5),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: StaggeredGridView.countBuilder(
+                      physics: BouncingScrollPhysics(),
+                      crossAxisCount: 4,
+                      itemCount: countMemo,
+                      itemBuilder: (BuildContext context, int index) {
+                        final descMemoText = this.memoList[index].description;
+                        return InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30),
+                                  topLeft: Radius.circular(30),
+                                ),
+                              ),
+                              builder: (BuildContext bc) {
+                                return ShowDetailMemo(
+                                    memoList: memoList,
+                                    index: index,
+                                    getCategoryName: getCategoryName);
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  color: memoColors[
+                                      (index % memoColors.length).floor()],
+                                  border:
+                                      Border.all(width: 2, color: Colors.black),
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: Text(
+                                            this.memoList[index].title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                                color: Colors.white),
+                                            // style: Theme.of(context).textTheme.body1,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0, bottom: 25.0, right: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Text(
+                                            /**
+                                     * Membatasi jumlah karakter huruf(substring) dari isi deskripsi ketika melebihi dari 100,
+                                     * maka karakter selanjutnya akan direplace dengan (...)
+                                     */
+                                            descMemoText.length > 100
+                                                ? '${descMemoText.substring(0, 100)}...'
+                                                : descMemoText,
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Text(
+                                            '[ ' +
+                                                getCategoryName(this
+                                                    .memoList[index]
+                                                    .categoryId) +
+                                                ' ]',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          this.memoList[index].date,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                      ])
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+                      mainAxisSpacing: 4.0,
+                      crossAxisSpacing: 4.0,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 17),
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/memo-icon.png'),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text("No memo yet :(",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                          color: Colors.grey[850]))
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
-  void updateListViewMemoCategory() {
+  void updateListViewMemoByCategory() {
     final Future<Database> dbFuture = dbHelper.initDb();
     dbFuture.then(
       (database) {

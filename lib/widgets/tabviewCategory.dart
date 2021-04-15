@@ -36,14 +36,15 @@ class TabViewCategory extends StatelessWidget {
             updateListViewCategory();
             updateListViewMemo();
             // Menampilkan snackbar.
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Category Item deleted")));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Category of '" +
+                    this.categoryList[index].name +
+                    "' deleted")));
           },
           // Menampilkan background saat item telah di-swipe (hapus).
           background: Container(
             color: categoryColors[(index % categoryColors.length).floor()],
-            margin: EdgeInsets.only(top: 10, bottom: 10),
-            padding: EdgeInsets.only(right: 10, left: 10),
+            margin: EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

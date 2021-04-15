@@ -173,6 +173,7 @@ class DbHelper {
       'memo',
       where: 'categoryId=?',
       whereArgs: [categoryId],
+      orderBy: 'date',
     );
 
     return mapListMemo;
